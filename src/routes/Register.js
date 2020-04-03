@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Message , Input, Container, Header, Button } from 'semantic-ui-react'
+import {Form,Message , Input, Container, Header, Button } from 'semantic-ui-react'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 
@@ -64,53 +64,58 @@ class Register extends Component {
               return  (
                 <Container text>
                 <Header as='h2'>Register</Header>
-                <Input 
-                    fluid 
-                    error={usernameError ? true : false}
-                    name="username"
-                    onChange={this.onChange}
-                    value={username}
-                    icon='user' 
-                    placeholder='Username' 
-                />
-                <Input 
-                    fluid 
-                    error={emailError  ? true : false}
-                    onChange={this.onChange}
-                    value={email}
-                    name="email"
-                    icon='at' 
-                    placeholder='Email' 
-                />
-                <Input 
-                    fluid 
-                    error={passwordError  ? true : false}
-                    onChange={this.onChange}
-                    value={password}
-                    name="password"
-                    type="password" 
-                    icon='lock' 
-                    placeholder='Password' 
-                />
-                <Button onClick={ (e) => {
-                    e.preventDefault();
-                    const { username , email ,password } = this.state
-                    this.setState({
-                        usernameError:'',
-                        passwordError: '',
-                        emailError: ''
-                    })
-                    addRegister({variables: {
-                        username: username,
-                        email: email,
-                        password: password
-                    }})
-                }} primary>Submit</Button>
-                {usernameError || emailError || passwordError ? (<Message
-                    error
-                    header='There was some errors with your submission'
-                    list={errorList}
-                /> ) : null}
+                <Form>
+                    <Form.Field error={usernameError ? true : false}>
+                        <Input 
+                            fluid 
+                            name="username"
+                            onChange={this.onChange}
+                            value={username}
+                            icon='user' 
+                            placeholder='Username' 
+                        />
+                    </Form.Field>
+                    <Form.Field error={emailError  ? true : false}>
+                        <Input 
+                            fluid 
+                            onChange={this.onChange}
+                            value={email}
+                            name="email"
+                            icon='at' 
+                            placeholder='Email' 
+                        />
+                    </Form.Field>
+                    <Form.Field error={passwordError  ? true : false}>
+                        <Input 
+                            fluid 
+                            onChange={this.onChange}
+                            value={password}
+                            name="password"
+                            type="password" 
+                            icon='lock' 
+                            placeholder='Password' 
+                        />
+                    </Form.Field>
+                    <Button onClick={ (e) => {
+                        e.preventDefault();
+                        const { username , email ,password } = this.state
+                        this.setState({
+                            usernameError:'',
+                            passwordError: '',
+                            emailError: ''
+                        })
+                        addRegister({variables: {
+                            username: username,
+                            email: email,
+                            password: password
+                        }})
+                    }} primary>Submit</Button>
+                </Form>
+                {errorList.length ? (<Message
+                        error
+                        header='There was some errors with your submission'
+                        list={errorList}
+                    /> ) : null}
               </Container>
             )}}
           </Mutation>

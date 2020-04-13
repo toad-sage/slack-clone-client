@@ -9,24 +9,33 @@ class CreateTeam extends Component {
 
     constructor(props) {
         super(props)
-    
+
         extendObservable(this,{
             name: '',
             errors: {},
         })
     }
-
-    onChange = e => {
+    //eslint parsing error
+    onChange = (e) => {
         const {name,value} = e.target;
         this[name] = value;
     }
-   
+
     onSubmit = async (e) => {
         const {name }  =this;
-        console.log(name)
-        const response = await this.props.mutate({
-            variables: {name },
-        });
+        let response = null;
+        // console.log(name)
+        try {
+          response = await this.props.mutate({
+              variables: {name },
+          });
+        } catch (e) {
+          this.props.history.push('/');
+          return ;
+        }
+
+        console.log(response);
+
         const { ok ,errors } = response.data.createTeam;
         if(ok) {
             this.props.history.push('/');
@@ -35,7 +44,7 @@ class CreateTeam extends Component {
             errors.forEach(({path,message}) => {
                 err[`${path}Error`] = message;
             });
-            
+
             this.errors = err;
         }
     }
@@ -55,13 +64,13 @@ class CreateTeam extends Component {
                 <Header as='h2'>Create a Team</Header>
                 <Form>
                 <Form.Field error={!!nameError}>
-                    <Input 
-                        fluid 
+                    <Input
+                        fluid
                         onChange={this.onChange}
                         value={name}
                         name="name"
-                        icon='users' 
-                        placeholder='Name' 
+                        icon='users'
+                        placeholder='Name'
                     />
                 </Form.Field>
                 <Button onClick={this.onSubmit} primary>Submit</Button>

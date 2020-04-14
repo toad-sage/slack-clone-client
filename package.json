@@ -13,8 +13,11 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
     "colors": "^1.4.0",
+    "formik": "^2.1.4",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.3",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.15",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",
     "react": "^16.13.1",
@@ -23,7 +26,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.88.2"
+    "semantic-ui-react": "^0.88.2",
+    "styled-components": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

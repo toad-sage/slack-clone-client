@@ -2,6 +2,8 @@
 /* eslint-disable react/display-name */
 import React from 'react'
 import styled from 'styled-components';
+import { Icon } from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
 
 const ChannelWrapper = styled.div`
   grid-column: 2;
@@ -41,13 +43,17 @@ const Green  = styled.span`
 
 const Button  = ({on = true}) => (on ? <Green>●</Green> : 'o');
 
-const channel = ({id,name}) => <SideBarListItem key={`channel-${id}`}># {name}</SideBarListItem>;
+const channel = ({id,name},teamId) => <Link key={`channel-${id}`} to={`/view-team/${teamId}/${id}`} >
+                                  <SideBarListItem>
+                                    # {name}
+                                  </SideBarListItem>
+                                </Link>
 
 const user = ( {id , name} ) => <SideBarListItem key={`user-${id}`}>
                                   <Button on={false}/>{name}
                                 </SideBarListItem>;
 
-export default ({teamName,username,channels,users}) => (
+export default ({teamName,username,channels,users, onAddChannelClick, teamId}) => (
   <ChannelWrapper>
     <div>
       <PushLeft>
@@ -57,8 +63,10 @@ export default ({teamName,username,channels,users}) => (
     </div>
     <div>
       <SideBarList>
-        <SideBarListHeader>Channels</SideBarListHeader>
-        {channels.map(channel)}
+        <SideBarListHeader>
+          Channels <Icon name="add circle" onClick={onAddChannelClick} />
+        </SideBarListHeader>
+        {channels.map(c => channel(c,teamId))}
       </SideBarList>
     </div>
     <div>

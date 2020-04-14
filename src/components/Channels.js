@@ -48,7 +48,7 @@ const channel = ({id,name},teamId) => <Link key={`channel-${id}`} to={`/view-tea
                                     # {name}
                                   </SideBarListItem>
                                 </Link>
-
+ 
 const user = ( {id , name} ) => <SideBarListItem key={`user-${id}`}>
                                   <Button on={false}/>{name}
                                 </SideBarListItem>;

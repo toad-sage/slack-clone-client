@@ -5,31 +5,44 @@ import decode from 'jwt-decode';
 import Channels from '../components/Channels'
 import Teams from '../components/Teams'
 import AddChannelModal from '../components/AddChannelModal'
+import InvitePeopleModal from '../components/InvitePeopleModal'
 
 class Sidebar extends Component {
 
   state = {
     openAddChannelModal: false,
+    openInvitePeopleModal: false, 
   }
 
-  handleCloseAddChannelModal = () => {
-    this.setState({ openAddChannelModal: false })
+  toggleAddChannelModal = (e) => {
+    if(e){
+      e.preventDefault();
+    }
+    this.setState(state => ({ openAddChannelModal: !state.openAddChannelModal }));
   }
 
-  handleAddChannelModal = () => {
-    this.setState({ openAddChannelModal: true })
+  toggleInvitePeopleModal = (e) => {
+      if(e){
+        e.preventDefault();
+      }
+     this.setState(prevState =>({ openInvitePeopleModal: !prevState.openInvitePeopleModal }))
   }
 
   render (){
 
     const {teams , team} = this.props;
+    const { openInvitePeopleModal, openAddChannelModal } = this.state;
 
     let username = '';
+    let isOwner = false;
     try {
       const token = localStorage.getItem('token');
       const { user } = decode(token);
       // eslint-disable-next-line prefer-destructuring
       username = user.username;
+      // console.log(team);
+      isOwner = user.id === team.owner;
+      // console.log(`isOwner`,isOwner);
     } catch (err) {}
 
     return [
@@ -43,14 +56,22 @@ class Sidebar extends Component {
         username={username}
         teamId = {team.id}
         channels={team.channels}
-        onAddChannelClick={this.handleAddChannelModal}
+        isOwner={isOwner}
+        onAddChannelClick={this.toggleAddChannelModal}
+        onInvitePeopleClick={this.toggleInvitePeopleModal}
         users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
       />,
       <AddChannelModal
         teamId = {team.id}
-        open = {this.state.openAddChannelModal}
+        open = {openAddChannelModal}
         key = "sidebar-add-channel-modal"
-        onClose= {this.handleCloseAddChannelModal}
+        onClose= {this.toggleAddChannelModal}
+      />,
+      <InvitePeopleModal
+        teamId = {team.id}
+        open = {openInvitePeopleModal}
+        onClose = {this.toggleInvitePeopleModal}
+        key = "side-bar-invite-people-modal"
       />
     ];
   }

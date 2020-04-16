@@ -29,8 +29,10 @@ class CreateTeam extends Component {
           response = await this.props.mutate({
               variables: {name },
           });
+          console.log(response);
         } catch (e) {
-          this.props.history.push('/');
+            // console.log(e);
+          this.props.history.push('/view-team');
           return ;
         }
 

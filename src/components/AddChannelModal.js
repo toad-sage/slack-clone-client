@@ -59,6 +59,7 @@ export default compose(
   withFormik({
   mapPropsToValues: () => ({name: ''}),
   handleSubmit: async (values,{ props: {teamId , onClose , mutate}, setSubmitting }) => {
+    // console.log('entered',teamId);
     await mutate(
       {variables: {teamId,name: values.name},
       optimisticResponse: {

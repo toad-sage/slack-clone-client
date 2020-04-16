@@ -48,7 +48,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
             <Route path="/" exact component={Home} />
             <Route path="/register" exact component={Register} />
             <Route path="/login" exact component={Login} />
-            <Route path="/view-team/:teamId?/:channelId?" exact component={ViewTeam}></Route>
+            <PrivateRoute path="/view-team/:teamId?/:channelId?" exact component={ViewTeam} />
             <PrivateRoute path="/createTeam" exact component={CreateTeam} />
         </Switch>
     </BrowserRouter>

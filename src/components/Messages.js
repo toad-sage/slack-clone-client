@@ -7,5 +7,5 @@ export default styled.div`
   padding-right: 20px;
   display: flex;
   flex-direction: column-reverse;
-  overflow: auto;
-`;;
+  overflow-y: auto;
+`;

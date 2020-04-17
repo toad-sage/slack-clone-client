@@ -59,7 +59,7 @@ export default compose(
 			await mutate(
 			{variables: {channelId , text: values.message},
 			});
-			window.location.reload(false);
+			// window.location.reload(false);
 			resetForm(false);
 		},
 	}),

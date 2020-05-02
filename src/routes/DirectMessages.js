@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import SendMessage from '../components/SendMessage';
 import AppLayout from '../components/AppLayout';
 import Sidebar from '../containers/Sidebar'
-import MessageContainer from '../containers/MessageContainer'
+import DirectMessageContainer  from '../containers/DirectMessageContainer'
 
 import findIndex from 'lodash/findIndex'
 import {flowRight as compose} from 'lodash';
@@ -15,7 +15,13 @@ import { graphql } from '@apollo/react-hoc'
 import { meQuery } from '../graphql/team'
 import gql from 'graphql-tag';
 
-const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , channelId } } }) => {
+const createDirectMessageMutation = gql`
+    mutation($receiverId: Int!,$text: String!,$teamId: Int!){
+        createDirectMessage(receiverId: $receiverId,text: $text,teamId: $teamId)
+    }
+`;
+
+const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , userId } } }) => {
 
     if (loading) {
       return null;
@@ -37,11 +43,6 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
         teamIdx = 0; 
     }
     const team = teams[teamIdx];
-    let channelIdx = channelId ? findIndex(team.channels, ['id', Number(channelId)]) : 0;
-    if(channelIdx === -1){
-        channelIdx = 0;
-    }
-    const channel = team.channels[channelIdx];
 
     return (
         <AppLayout>
@@ -53,29 +54,29 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
                 username={username}
                 team={team}
              />
-            {channel && <Header channelName={channel.name} />}
-            {channel && <MessageContainer channelId={channel.id} />}
-            {channel && <SendMessage 
-                placeholder={channel.name} 
+            <Header channelName="Someone's username" />
+            {console.log(`details: ${teamId} ${userId}`)}
+            <DirectMessageContainer teamId={teamId} userId={userId} />
+            <SendMessage 
+                placeholder={userId} 
                 onSubmit={
                     async(text) => {
-                        await mutate({
-                            variables: {text,channelId: channel.id}
+                        const response = await mutate({
+                            variables: {
+                                text,
+                                receiverId: Number(userId),
+                                teamId: Number(teamId)
+                            },
                         });
+                        console.log(response);
                     }
-                }                
-                />}
+                }  
+            />
         </AppLayout>
     )
 }
 
-const createMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
-  }
-`;
-
 export default compose(
     graphql(meQuery,{options: { fetchPolicy: 'network-only' }}),
-    graphql(createMessageMutation),
+    graphql(createDirectMessageMutation),
 )(ViewTeam); 

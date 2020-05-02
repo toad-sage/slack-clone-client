@@ -29,14 +29,14 @@ class CreateTeam extends Component {
           response = await this.props.mutate({
               variables: {name },
           });
-          console.log(response);
+        //   console.log(response);
         } catch (e) {
             // console.log(e);
           this.props.history.push('/view-team');
           return ;
         }
 
-        console.log(response);
+        // console.log(response);
 
         const { ok ,errors , team } = response.data.createTeam;
         if(ok) {

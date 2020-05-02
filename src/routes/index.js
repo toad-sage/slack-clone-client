@@ -9,6 +9,7 @@ import Register from './Register'
 import Login from './Login'
 import CreateTeam from './CreateTeam'
 import ViewTeam from './ViewTeam';
+import DirectMessages from './DirectMessages'
 
 const isAuthenticated = () => {
   // console.log(`entered`)
@@ -50,6 +51,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
             <Route path="/login" exact component={Login} />
             <PrivateRoute path="/view-team/:teamId?/:channelId?" exact component={ViewTeam} />
             <PrivateRoute path="/createTeam" exact component={CreateTeam} />
+            <PrivateRoute path="/view-team/user/:teamId/:userId" exact component={DirectMessages} />
         </Switch>
     </BrowserRouter>
   )

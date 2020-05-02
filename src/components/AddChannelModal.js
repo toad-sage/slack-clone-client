@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import { withFormik } from 'formik';
 import { Button,Form, Input , Modal } from 'semantic-ui-react'
@@ -7,10 +8,9 @@ import {graphql } from '@apollo/react-hoc'
 
 import {flowRight as compose} from 'lodash';
 import findIndex from 'lodash/findIndex';
-import {allTeamsQuery} from '../graphql/team'
+import {meQuery} from '../graphql/team'
 
 const AddChannelModel = ({
-  teamId,
   open , 
   onClose,
   values,
@@ -78,10 +78,10 @@ export default compose(
         if(!ok){
           return;
         }
-        const data = store.readQuery({ query: allTeamsQuery });
-        const teamIdx = findIndex(data.allTeams, ['id', teamId]);
-        data.allTeams[teamIdx].channels.push(channel);
-        store.writeQuery({ query: allTeamsQuery, data });
+        const data = store.readQuery({ query: meQuery });
+        const teamIdx = findIndex(data.me.teams, ['id', teamId]);
+        data.me.teams[teamIdx].channels.push(channel);
+        store.writeQuery({ query: meQuery, data });
       }, 
     });
     onClose();

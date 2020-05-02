@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import { withFormik } from 'formik';
 import { Button,Form, Input , Modal } from 'semantic-ui-react'

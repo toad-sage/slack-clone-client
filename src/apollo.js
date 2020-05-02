@@ -21,31 +21,37 @@ const middlewareLink = setContext( () => ({
 
 const afterwareLink = new ApolloLink((operation,forward) => {
   
-  const { headers } = operation.getContext();
-
-  if(headers){
-    const token = headers.get('x-token');
-    const refreshToken = headers.get('x-refresh-token');
-
-    if(token){
-      localStorage.setItem('token',token);
+  return forward(operation).map(response => {
+    const { response: {headers} } = operation.getContext();
+    if(headers){
+      const token = headers.get('x-token');
+      const refreshToken = headers.get('x-refresh-token');
+  
+      if(token){
+        localStorage.setItem('token',token);
+      }
+  
+      if(refreshToken){
+        localStorage.setItem('refresh-token',refreshToken);
+      }
     }
-
-    if(refreshToken){
-      localStorage.setItem('refresh-token',refreshToken);
-    }
-  }
-
-  return forward(operation);
-
+  
+    return response;
+  })
 })
 
-const httpLinkWithMiddleWare = afterwareLink.concat(middlewareLink.concat(httpLink));
+const httpLinkWithMiddleWare = afterwareLink.concat(
+  middlewareLink.concat(httpLink)
+  );
 
 const wsLink = new WebSocketLink({
     uri: 'ws://localhost:8080/graphql',
     options: {
       reconnect: true,
+      connectionParams: {
+        token: localStorage.getItem('token'),
+        refreshToken: localStorage.getItem('refreshtoken'),
+      }
     },
   });  
 

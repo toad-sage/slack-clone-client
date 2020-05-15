@@ -37,7 +37,8 @@ class Sidebar extends Component {
 
   render (){
 
-    const {teams , team,username} = this.props;
+    const {teams , team,username,currentUserId} = this.props;
+    console.log(team.directMessageMembers,currentUserId)
     const { openInvitePeopleModal, openAddChannelModal,openDirectMessageModal } = this.state;
 
     return [
@@ -55,7 +56,7 @@ class Sidebar extends Component {
         onAddChannelClick={this.toggleAddChannelModal}
         onInvitePeopleClick={this.toggleInvitePeopleModal}
         openDirectMessageClick={this.toggleDirectMessageModal}
-        users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
+        users={team.directMessageMembers.filter(member => member.id !== currentUserId)}
       />,
       <DirectMessageModal
         teamId = {team.id}

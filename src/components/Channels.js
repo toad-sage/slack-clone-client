@@ -49,8 +49,10 @@ const channel = ({id,name},teamId) => <Link key={`channel-${id}`} to={`/view-tea
                                   </SideBarListItem>
                                 </Link>
  
-const user = ( {id , name} ) => <SideBarListItem key={`user-${id}`}>
-                                  <Button on={false}/>{name}
+const user = ( {id , username},teamId ) => <SideBarListItem key={`user-${id}`}>
+                                  <Link to={`/view-team/user/${teamId}/${id}`}>
+                                  <Button on={false}/>{username}
+                                  </Link>
                                 </SideBarListItem>;
 
 export default ({
@@ -82,7 +84,7 @@ export default ({
     <div>
       <SideBarList>
         <SideBarListHeader>Direct Messages <Icon name="add circle" onClick={openDirectMessageClick} /> </SideBarListHeader>
-        {users.map(user)}
+        {users.map(u => user(u,teamId))}
       </SideBarList>
     </div>
     {isOwner &&

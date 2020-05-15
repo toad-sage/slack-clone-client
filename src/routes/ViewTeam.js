@@ -24,7 +24,7 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
     // console.log(otherProps);
     console.log(me);
 
-    const { teams,username } = me;
+    const { teams,username,id } = me;
 
     if(!teams.length){
         return (<Redirect to="/createTeam"/>)
@@ -51,6 +51,7 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
                   letter: t.name.charAt(0).toUpperCase(),
                 }))}
                 username={username}
+                currentUserId = {id}
                 team={team}
              />
             {channel && <Header channelName={channel.name} />}

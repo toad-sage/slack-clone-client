@@ -12,7 +12,7 @@ import {flowRight as compose} from 'lodash';
 
 import {Redirect} from 'react-router-dom'
 import { graphql } from '@apollo/react-hoc'
-import { meQuery } from '../graphql/team'
+import { meQuery } from '../graphql/team';
 import gql from 'graphql-tag';
 
 const createDirectMessageMutation = gql`
@@ -21,7 +21,7 @@ const createDirectMessageMutation = gql`
     }
 `;
 
-const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , userId } } }) => {
+const ViewTeam  = ({ mutate,data: { loading, me,getUser }, match: { params: { teamId , userId } } }) => {
 
     if (loading) {
       return null;
@@ -30,7 +30,7 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , u
     // console.log(otherProps);
     console.log(me);
 
-    const { teams,username } = me;
+    const { teams,username,id } = me;
 
     if(!teams.length){
         return (<Redirect to="/createTeam"/>)
@@ -52,11 +52,11 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , u
                   letter: t.name.charAt(0).toUpperCase(),
                 }))}
                 username={username}
+                currentUserId={id}
                 team={team}
              />
-            <Header channelName="Someone's username" />
-            {console.log(`details: ${teamId} ${userId}`)}
-            <DirectMessageContainer teamId={teamId} userId={userId} />
+            <Header channelName={getUser.username} />
+            <DirectMessageContainer teamId={team.id} userId={userId} />
             <SendMessage 
                 placeholder={userId} 
                 onSubmit={
@@ -67,6 +67,22 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , u
                                 receiverId: Number(userId),
                                 teamId: Number(teamId)
                             },
+                            optimisticResponse: {
+                                createDirectMessage: true,
+                            },
+                            update: (store) => {
+                                const data = store.readQuery({query: meQuery});
+                                const teamIdx2 = findIndex(data.me.teams,['id',team.id]);
+                                const notPresent = data.me.teams[teamIdx2].directMessageMembers.every(member => member.id !== parseInt(userId,10));
+                                if(notPresent){
+                                    data.me.teams[teamIdx2].directMessageMembers.push({
+                                        __typename: 'User',
+                                        id: userId,
+                                        username: getUser.username
+                                    });
+                                    store.writeQuery({query: meQuery})
+                                }
+                            }
                         });
                         console.log(response);
                     }
@@ -76,7 +92,37 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , u
     )
 }
 
+const directMessageMeQuery = gql`
+    query($userId: Int!) {
+        getUser(userId: $userId){
+            username
+        }
+        me {
+            id
+            username
+            teams {
+              id 
+              name
+              admin
+              directMessageMembers {
+                id
+                username
+              }
+              channels {
+                id
+                name
+              }
+            }
+          }
+    }
+`;
+
 export default compose(
-    graphql(meQuery,{options: { fetchPolicy: 'network-only' }}),
+    graphql(directMessageMeQuery,{
+        options: props => ({
+            variables: {userId: Number(props.match.params.userId)},
+            fetchPolicy: 'network-only',
+        }),
+    }),
     graphql(createDirectMessageMutation),
 )(ViewTeam); 

@@ -29,11 +29,11 @@ class Login extends Component {
             variables: {email , password },
         });
         const { ok , token , refreshToken ,errors } = response.data.login;
-        // console.log(`${ok} ${token} ${refreshToken}`)
         if(ok) {
+            console.log(`${ok} ${token} ${refreshToken}`)
             localStorage.setItem('token',token);
             localStorage.setItem('refreshtoken',refreshToken);
-            this.props.history.push('/');
+            this.props.history.push('/view-team');
         }else{
             const err = {};
             errors.forEach(({path,message}) => {

@@ -38,7 +38,7 @@ class Sidebar extends Component {
   render (){
 
     const {teams , team,username,currentUserId} = this.props;
-    console.log(team.directMessageMembers,currentUserId)
+    // console.log(team.directMessageMembers,currentUserId)
     const { openInvitePeopleModal, openAddChannelModal,openDirectMessageModal } = this.state;
 
     return [

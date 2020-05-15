@@ -10,7 +10,6 @@ import {flowRight as compose} from 'lodash';
 import normalizeErrors from '../normalizeErrors';
 
 const InvitePeopleModal = ({
-  teamId,
   open , 
   onClose,
   values,
@@ -62,12 +61,12 @@ export default compose(
   withFormik({
   mapPropsToValues: () => ({email: ''}),
   handleSubmit: async (values,
-  	{ props: {teamId , onClose , mutate}, 
-  	setSubmitting , setErrors }) => {
-  	console.log(teamId);
-    const response = await mutate({
-    	variables: {teamId,email: values.email}
-    });
+      { props: {teamId , onClose , mutate}, 
+      setSubmitting , setErrors }) => {
+      console.log(teamId);
+      const response = await mutate({
+        variables: {teamId,email: values.email}
+      });
 	
 	const {ok , errors } = response.data.addTeamMember;
 	if(ok){
@@ -76,7 +75,13 @@ export default compose(
 	}
 	else{
 		setSubmitting(false);
-		setErrors(normalizeErrors(errors));
+		setErrors(normalizeErrors(errors.map(e => (
+      e.message === "user_id must be unique" ?
+      {
+        path: "email",
+        message: "This user is already part of the team"
+      }: e
+      ) )));
 	}
   },
 }),

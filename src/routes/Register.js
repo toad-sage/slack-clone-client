@@ -27,7 +27,7 @@ class Register extends Component {
         const {ok,errors} = data.register;
         // console.log(ok,errors)
         if(ok){
-            this.props.history.push('/');
+            this.props.history.push('/login');
         }else{
             const err = {};
             errors.forEach(({path,message}) => {

@@ -57,6 +57,7 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
             {channel && <Header channelName={channel.name} />}
             {channel && <MessageContainer channelId={channel.id} />}
             {channel && <SendMessage 
+                channelId={channel.id}
                 placeholder={channel.name} 
                 onSubmit={
                     async(text) => {

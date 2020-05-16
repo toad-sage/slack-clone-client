@@ -5,6 +5,8 @@ export const messageQuery = gql`
 		messages(channelId: $channelId){
 			id
 			text
+			fileType
+			url
 			user{
 				username
 			}

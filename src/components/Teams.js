@@ -46,7 +46,7 @@ export default ({teams}) => (
   <TeamWrapper>
     <TeamList>
       {teams.map(team)}
-      <Link key="add-team" to="/create-team">
+      <Link key="add-team" to="/createTeam">
         <TeamListItem>+</TeamListItem>
       </Link>
     </TeamList>

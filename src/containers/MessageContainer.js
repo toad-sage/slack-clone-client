@@ -36,7 +36,6 @@ const Message = ({ message: { url, text, fileType } }) => {
 			    src={url}
 			    as='a'
 			    size='medium'
-			    target='_blank'
 			  />
 			  </div>
 			)
@@ -50,10 +49,16 @@ const Message = ({ message: { url, text, fileType } }) => {
           </audio>
         </div>
       );
+    } else if(fileType.startsWith('video/')){
+		return (<div>
+					<video width="320" height="240" controls>
+		 			 	<source src={url} type={fileType} />
+					</video>
+				</div>)
     }
   }
 
-  return <Comment.Text>{text}</Comment.Text>;
+  return <Comment.Text >{text}</Comment.Text>;
 };
 
 
@@ -114,7 +119,6 @@ class MessageContainer extends Component {
 	return (loading ? null : (
 		<Messages>
 		<FileUpload channelId={channelId} disableClick>
-
 				<Comment.Group>
 					{messages.map(m => (
 					<Comment key={`${m.id}-message`}>
@@ -124,7 +128,7 @@ class MessageContainer extends Component {
 						<Comment.Metadata>
 							<div>{m.createdAt}</div>
 						</Comment.Metadata>
-						<Message message={m} />
+						<Message message={m}/>
 						<Comment.Actions>
 							<Comment.Action>Reply</Comment.Action>
 						</Comment.Actions>

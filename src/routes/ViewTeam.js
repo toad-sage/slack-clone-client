@@ -55,7 +55,7 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
                 team={team}
              />
             {channel && <Header channelName={channel.name} />}
-            {channel && <MessageContainer channelId={channel.id} />}
+            {channel && <MessageContainer channelId={channel.id} currentUserId={id} />}
             {channel && <SendMessage 
                 channelId={channel.id}
                 placeholder={channel.name} 

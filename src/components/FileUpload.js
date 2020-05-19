@@ -3,6 +3,7 @@ import Dropzone from 'react-dropzone';
 import {graphql } from '@apollo/react-hoc'
 import gql from 'graphql-tag'
 
+// eslint-disable-next-line react/prop-types
 const FileUpload = ({children,disableClick,mutate,channelId,style}) => {
 
   const onDrop = useCallback(

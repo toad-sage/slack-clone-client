@@ -45,14 +45,17 @@ const httpLinkWithMiddleWare = afterwareLink.concat(
   middlewareLink.concat(httpLink)
   );
 
-const wsLink = new WebSocketLink({
+export const wsLink = new WebSocketLink({
     uri: 'ws://localhost:8080/graphql',
     options: {
       reconnect: true,
-      connectionParams: {
-        token: localStorage.getItem('token'),
-        refreshToken: localStorage.getItem('refreshtoken'),
-      }
+      lazy: true,
+      connectionParams: () => {
+          return {
+            token: localStorage.getItem('token'),
+            refreshToken: localStorage.getItem('refreshtoken'),
+          }
+        }
     },
   });  
 

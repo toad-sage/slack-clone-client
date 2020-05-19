@@ -4,6 +4,7 @@ import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import gql from 'graphql-tag'
 import { graphql } from '@apollo/react-hoc'
+import {wsLink} from '../apollo';
 
 class Login extends Component {
 
@@ -34,6 +35,7 @@ class Login extends Component {
             localStorage.setItem('token',token);
             localStorage.setItem('refreshtoken',refreshToken);
             this.props.history.push('/view-team');
+            // wsLink.subscriptionClient.tryReconnect();
         }else{
             const err = {};
             errors.forEach(({path,message}) => {

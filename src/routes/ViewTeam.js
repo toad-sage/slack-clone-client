@@ -17,7 +17,7 @@ import gql from 'graphql-tag';
 
 const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , channelId } } }) => {
 
-    if (loading) {
+    if (loading || !me) {
       return null;
     }
 

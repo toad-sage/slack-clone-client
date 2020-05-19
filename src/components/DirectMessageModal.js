@@ -69,7 +69,7 @@ export default compose(
     graphql(getDMChannelQuery),
     withFormik({
   mapPropsToValues: () => ({members: []}),
-  handleSubmit: async (values,{ props: {onClose , mutate,teamId}, setSubmitting }) => {
+  handleSubmit: async (values,{ props: {history, onClose , mutate,teamId},resetForm }) => {
     const response = await mutate({
         variables: {
             teamId,
@@ -84,9 +84,10 @@ export default compose(
           data.me.teams[teamIdx].channels.push({id , name , dm: true, __typename: "Channel"});
           store.writeQuery({ query: meQuery, data });
         }
+        history.push(`/view-team/${teamId}/${id}`);
       }, 
     });
+    resetForm();
     onClose();
-    setSubmitting(false);
   },
 }))(DirectMessageModal);

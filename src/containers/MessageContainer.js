@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import {graphql } from '@apollo/react-hoc'
 
-import { Comment ,Image} from 'semantic-ui-react'
+import { Comment ,Image,Button} from 'semantic-ui-react'
 
 import Messages from '../components/Messages'
 import {messageQuery} from '../graphql/message'
@@ -64,6 +64,13 @@ const Message = ({ message: { url, text, fileType } }) => {
 
 class MessageContainer extends Component { 
 
+	constructor(props){
+		super(props);
+		this.state = {
+			hasMoreItems: true
+		}
+	}
+	
 	// eslint-disable-next-line react/no-deprecated
 	componentDidMount() {
 		console.log('channel',this.props.channelId)
@@ -97,21 +104,24 @@ class MessageContainer extends Component {
 				if(!subscriptionData.data){
 					return prev;
 				}
-				// console.log(prev,subscriptionData.data.newChannelMessage);
 				let newMessage = subscriptionData.data.newChannelMessage;
-				console.log(newMessage);
 				if(!newMessage.url)
 				{
 					newMessage.url = null;
 					newMessage.fileType = null;
 				}
-				console.log('new Message'.newMessage);
 				return{
 					...prev,
-					messages: [...prev.messages, newMessage],
+					messages: [newMessage,...prev.messages],
 				};
 			},
 		});
+
+	time = (createdAt) => {
+		let date = new Date(createdAt);
+
+		return `${date}`
+	} 
 
    render(){
 	// eslint-disable-next-line react/prop-types
@@ -120,13 +130,33 @@ class MessageContainer extends Component {
 		<Messages>
 		<FileUpload channelId={channelId} disableClick>
 				<Comment.Group>
-					{messages.map(m => (
+					{this.state.hasMoreItems && (<Button onClick={() => {
+											this.props.data.fetchMore({
+												variables: {
+													channelId,
+									            	offset: messages.length
+										        },
+										        updateQuery: (prev, { fetchMoreResult }) => {
+										            if (!fetchMoreResult) return prev;
+										            if(fetchMoreResult.messages.length === 0)
+										            {
+										            	this.setState({hasMoreItems: false})
+										            }
+										            return {
+										            	...prev,
+										            	messages: [...prev.messages,...fetchMoreResult.messages],
+										            }
+										        }
+											});
+										}}>Load More
+										</Button>)}
+					{[...messages].reverse().map(m => (
 					<Comment key={`${m.id}-message`}>
 						<Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
 						<Comment.Content>
 						<Comment.Author as='a'>{m.user.username}</Comment.Author>
 						<Comment.Metadata>
-							<div>{m.createdAt}</div>
+							<div>{this.time(m.createdAt)}</div>
 						</Comment.Metadata>
 						<Message message={m}/>
 						<Comment.Actions>
@@ -144,11 +174,11 @@ class MessageContainer extends Component {
 }
 
 export default graphql(messageQuery,{
-	variables: props => ({
+	options:props => ({
+		fetchPolicy: "network-only",
+		variables:{
 		channelId: props.channelId,
-	}),
-	options:{
-		fetchPolicy: "network-only"
-	}
-}
-)(MessageContainer)
+		offset: 0,
+		},
+	})
+})(MessageContainer)

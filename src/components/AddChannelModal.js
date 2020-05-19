@@ -51,7 +51,7 @@ const AddChannelModel = ({
         )}
         <Form.Field>
           <Checkbox 
-            value={!values.public}
+            checked={!values.public}
             toggle 
             label="Private"
             onChange={(e,{checked}) => setFieldValue('public',!checked)}
@@ -73,6 +73,7 @@ const createChannelMutation = gql`
       channel{
         id
         name
+        dm
       }
       ok
     }
@@ -94,7 +95,9 @@ export default compose(
           channel: {
             __typename: 'Channel',
             id: -1,
-            name: values.name
+            name: values.name,
+            dm: false
+
           },
         },
       },

@@ -117,24 +117,19 @@ class MessageContainer extends Component {
 			},
 		});
 
-	time = (createdAt) => {
-		let date = new Date(createdAt);
-
-		return `${date}`
-	} 
-
    render(){
 	// eslint-disable-next-line react/prop-types
-	const {data: {loading,messages},channelId} = this.props
+	const {data: {loading,messages,fetchMore},channelId} = this.props
 	return (loading ? null : (
 		<Messages>
 		<FileUpload channelId={channelId} disableClick>
 				<Comment.Group>
-					{this.state.hasMoreItems && (<Button onClick={() => {
-											this.props.data.fetchMore({
+					{/* 20 is message limit on backend */}
+					{this.state.hasMoreItems && messages.length>=20 && (<Button onClick={() => {
+											fetchMore({
 												variables: {
 													channelId,
-									            	offset: messages.length
+													cursor: messages[messages.length -1].createdAt
 										        },
 										        updateQuery: (prev, { fetchMoreResult }) => {
 										            if (!fetchMoreResult) return prev;
@@ -150,13 +145,13 @@ class MessageContainer extends Component {
 											});
 										}}>Load More
 										</Button>)}
-					{[...messages].reverse().map(m => (
+					{messages.slice().reverse().map(m => (
 					<Comment key={`${m.id}-message`}>
 						<Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
 						<Comment.Content>
 						<Comment.Author as='a'>{m.user.username}</Comment.Author>
 						<Comment.Metadata>
-							<div>{this.time(m.createdAt)}</div>
+							<div>{m.createdAt}</div>
 						</Comment.Metadata>
 						<Message message={m}/>
 						<Comment.Actions>
@@ -178,7 +173,6 @@ export default graphql(messageQuery,{
 		fetchPolicy: "network-only",
 		variables:{
 		channelId: props.channelId,
-		offset: 0,
 		},
 	})
 })(MessageContainer)

@@ -18,7 +18,9 @@ const isAuthenticated = () => {
   // console.log(refreshToken)
   try{
     decode(token);
-    decode(refreshToken);
+    const {exp} = decode(refreshToken);
+    if(Date.now() / 1000 > exp)
+      return false;
   }catch(err){
     return false;
   }

@@ -22,7 +22,7 @@ const ViewTeam  = ({ mutate,data: { loading, me }, match: { params: { teamId , c
     }
 
     // console.log(otherProps);
-    console.log(me);
+    // console.log(me);
 
     const { teams,username,id } = me;
 

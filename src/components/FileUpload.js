@@ -8,7 +8,7 @@ const FileUpload = ({children,disableClick,mutate,channelId,style}) => {
 
   const onDrop = useCallback(
     async([file]) => {
-     // console.log(file); 
+     console.log(file); 
      await mutate({
       variables: {
         channelId,
